@@ -1,0 +1,35 @@
+@layout('layout.app')
+
+@section('content')
+
+<div class="h-100 w-100 row justify-content-center align-items-center">
+  <div class="col-6">
+    @include('layout.notification')
+    <h1 class="text-center">Signup</h1>
+    <form action="/api/signup" method="POST">
+      {{ csrfField() }}
+      <div class="form-group">
+        <input type="email" name="email" value="{{ old('email') }}" class="form-control {{ hasErrorFor('email') ? 'is-invalid' : '' }}" placeholder="Email">
+        {{ elIf('<span class="invalid-feedback">$self</span>', getErrorFor('email'), hasErrorFor('email')) }}
+      </div>
+      <div class="form-group">
+        <input type="text" name="firstName" value="{{ old('firstName') }}" class="form-control {{ hasErrorFor('firstName') ? 'is-invalid' : '' }}" placeholder="First Name">
+        {{ elIf('<span class="invalid-feedback">$self</span>', getErrorFor('firstName'), hasErrorFor('firstName')) }}
+      </div>
+      <div class="form-group">
+        <input type="text" name="lastName" value="{{ old('lastName') }}" class="form-control {{ hasErrorFor('lastName') ? 'is-invalid' : '' }}" placeholder="Last Name">
+        {{ elIf('<span class="invalid-feedback">$self</span>', getErrorFor('lastName'), hasErrorFor('lastName')) }}
+      </div>
+      <div class="form-group">
+        <input type="password" name="password" class="form-control {{ hasErrorFor('password') ? 'is-invalid' : '' }}" placeholder="Password">
+        {{ elIf('<span class="invalid-feedback">$self</span>', getErrorFor('password'), hasErrorFor('password')) }}
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">
+        Create Account
+      </button>
+    </form>
+  </div>
+
+</div>
+
+@endsection

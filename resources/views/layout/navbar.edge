@@ -1,0 +1,39 @@
+<nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
+  <a href="/" class="navbar-brand">Home</a>
+  <button class="navbar-toggler"
+    type="button"
+    data-toggle="collapse" 
+    data-target="#navbarSupportedContent" 
+    aria-controls="navbarSupportedContent" 
+    aria-expanded="false" 
+    aria-label="Toggle navigation"
+  >
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse flex-row justify-content-end" id="navbarSupportedContent">
+    <div class="navbar-nav">
+      <ul class="nav flex-sm-column flex-lg-row">
+        @loggedIn
+          <form action="/api/logout" method="POST">
+            {{ csrfField() }}
+            <button class="btn btn-light btn-clock" type="submit">
+              <strong>Logout!</strong>
+            </button>
+          </form>
+        @else
+        <button class="btn btn-light" type="submit">
+          <a href="/signup" class="nav-item nav-link">
+            <strong>Sign up</strong>
+          </a>
+        </button>
+        <button class="btn btn-light" type="submit">
+          <a href="/login" class="nav-item nav-link">
+            Log in
+          </a>
+        </button>
+        @endloggedIn
+      </ul>
+    </div>
+  </div>
+</nav>

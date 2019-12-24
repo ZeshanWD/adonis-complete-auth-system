@@ -17,3 +17,8 @@
 const Route = use('Route')
 
 Route.get('/', 'PageController.showHome');
+Route.get('/signup', 'PageController.showSignup');
+
+Route.group(() => {
+  Route.post('signup', 'AuthController.signup');
+}).prefix('api/');

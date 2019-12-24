@@ -6,6 +6,10 @@ class PageController {
     return view.render('home');
   }
 
+  showSignup({ view }) {
+    return view.render('signup');
+  }
+
 }
 
 module.exports = PageController

@@ -8,8 +8,7 @@ html, body {
 body {
   font-family: 'Montserrat', sans-serif;
   font-weight: 300;
-  background-image: url("/splash.png");
-  background-color: #220052;
+  background-color: #fff;
 }
 
 * {
