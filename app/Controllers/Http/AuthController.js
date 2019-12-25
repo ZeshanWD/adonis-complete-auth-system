@@ -5,9 +5,70 @@ const { flashAndRedirect } = use('App/Helpers');
 const User = use('App/Models/User');
 const Mail = use('Mail');
 const Env = use('Env');
+const Hash = use('Hash');
 const jwt = require('jsonwebtoken');
 
 class AuthController {
+
+  async logout({ auth, response }) {
+    await auth.logout();
+
+    return response.redirect('/');
+  }
+
+  async login({ session, request, response, auth }) {
+    const validation = await validate(request.all(), {
+      email: 'required',
+      password: 'required',
+    });
+
+    if (validation.fails()) {
+      session.withErrors(validation.messages()).flashExcept(['password']);
+      return response.redirect('back');
+    }
+
+    const user = await User.findBy('email', request.input('email'));
+    if (!user) {
+      return flashAndRedirect(
+        'danger',
+        'no user account found with this email',
+        'back',
+        {
+          session,
+          response,
+        }
+      );
+    }
+
+    if (!user.email_verified) {
+      return flashAndRedirect(
+        'danger',
+        'please verify your email first',
+        'back',
+        {
+          session,
+          response,
+        }
+      );
+    }
+
+    const isSame = await Hash.verify(request.input('password'), user.password);
+    if (!isSame) {
+      return flashAndRedirect(
+        'danger',
+        'incorrect credentials',
+        'back',
+        {
+          session,
+          response,
+        }
+      );
+    }
+
+    await auth.login(user);
+
+    return response.redirect('/dashboard');
+  }
 
   async resendConfirmationEmail({ request, response, session }) {
     const validation = await validate(request.all(), {

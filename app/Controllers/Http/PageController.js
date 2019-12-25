@@ -18,6 +18,10 @@ class PageController {
     return view.render('resend_confirm');
   }
 
+  showDashboard({ view }) {
+    return view.render('dashboard');
+  }
+
 }
 
 module.exports = PageController
