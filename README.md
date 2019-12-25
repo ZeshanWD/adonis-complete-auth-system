@@ -1,31 +1,7 @@
-# Adonis fullstack application
+# Adonis complete Authentication System
 
-This is the fullstack boilerplate for AdonisJs, it comes pre-configured with.
+This repo belongs to a youtube playlist, that covers the topic of creating an authentication system with Adonis js.
 
-1. Bodyparser
-2. Session
-3. Authentication
-4. Web security middleware
-5. CORS
-6. Edge template engine
-7. Lucid ORM
-8. Migrations and seeds
+[Youtube Playlist](https://www.youtube.com/watch?v=FDeSDz8W5B0&list=PLKzZ5IHxJJWe0ot5GJ0wO49ljErJcva1-)
 
-## Setup
-
-Use the adonis command to install the blueprint
-
-```bash
-adonis new yardstick
-```
-
-or manually clone the repo and then run `npm install`.
-
-
-### Migrations
-
-Run the following command to run startup migrations.
-
-```js
-adonis migration:run
-```
+![Miniatura curso de adonis js](miniatura.png)
