@@ -18,7 +18,11 @@ const Route = use('Route')
 
 Route.get('/', 'PageController.showHome');
 Route.get('/signup', 'PageController.showSignup');
+Route.get('/login', 'PageController.showLogin');
+Route.get('/confirm/resend', 'PageController.showResendConfirm');
 
 Route.group(() => {
   Route.post('signup', 'AuthController.signup');
+  Route.get('confirm/:token', 'AuthController.confirmAccount');
+  Route.post('confirm/resend', 'AuthController.resendConfirmationEmail');
 }).prefix('api/');

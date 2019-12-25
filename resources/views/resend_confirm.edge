@@ -1,0 +1,28 @@
+@layout('layout.app')
+
+@section('content')
+
+<div class="h-100 w-100 row justify-content-center align-items-center">
+  <div class="col-6">
+    @include('layout.notification')
+    <h1 class="text-center">
+      Resend Confirmation Email
+    </h1>
+    <div class="form">
+      <form action="/api/confirm/resend" method="POST">
+        {{ csrfField() }}
+        <div class="form-group">
+          <p class="control">
+            <input type="email" class="form-control {{ hasErrorFor('email') ? 'is-invalid' : '' }}" name="email" placeholder="Email">
+            {{ elIf('<span class="invalid-feedback">$self</span>', getErrorFor('email'), hasErrorFor('email')) }}
+          </p>
+        </div>
+        <button class="btn btn-primary btn-block">
+          Resend Confirmation Email
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+@endsection
