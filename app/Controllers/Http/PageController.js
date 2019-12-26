@@ -22,6 +22,15 @@ class PageController {
     return view.render('dashboard');
   }
 
+  showForgotPassword({ view }) {
+    return view.render('forgot_password');
+  }
+
+  showPasswordReset({ view, params }) {
+    return view.render('reset_password', {
+      token: params.token,
+    });
+  }
 }
 
 module.exports = PageController

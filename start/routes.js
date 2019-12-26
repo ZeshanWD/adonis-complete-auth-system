@@ -21,11 +21,15 @@ Route.get('/dashboard', 'PageController.showDashboard');
 Route.get('/signup', 'PageController.showSignup');
 Route.get('/login', 'PageController.showLogin');
 Route.get('/confirm/resend', 'PageController.showResendConfirm');
+Route.get('/password/reset/:token', 'PageController.showPasswordReset');
+Route.get('/forgot/password', 'PageController.showForgotPassword');
 
 Route.group(() => {
   Route.post('signup', 'AuthController.signup');
   Route.post('login', 'AuthController.login');
   Route.post('logout', 'AuthController.logout');
+  Route.post('password/reset/email', 'AuthController.sendResetEmail');
+  Route.post('password/reset', 'AuthController.resetPassword');
   Route.get('confirm/:token', 'AuthController.confirmAccount');
   Route.post('confirm/resend', 'AuthController.resendConfirmationEmail');
 }).prefix('api/');

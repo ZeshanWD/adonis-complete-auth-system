@@ -3,12 +3,145 @@
 const { validate } = use('Validator');
 const { flashAndRedirect } = use('App/Helpers');
 const User = use('App/Models/User');
+const PasswordReset = use('App/Models/PasswordReset');
 const Mail = use('Mail');
 const Env = use('Env');
 const Hash = use('Hash');
 const jwt = require('jsonwebtoken');
 
 class AuthController {
+
+  async resetPassword({ response, request, session }) {
+    const validation = await validate(request.all(), {
+      token: 'required',
+      password: 'required|confirmed'
+    });
+
+    if (validation.fails()) {
+      session.withErrors(validation.messages()).flashExcept(['password', 'password_confirmation']);
+      return response.redirect('back');
+    }
+
+    var payload;
+    try {
+      payload = jwt.verify(request.input('token'), Env.get('SECRET'));
+    } catch (error) {
+      if (error) {
+        return flashAndRedirect(
+          'danger',
+          'link is Invalid or has expired!',
+          '/login',
+          {
+            session,
+            response,
+          }
+        );
+      }
+    }
+    
+    const user = await User.findBy('email', payload.email);
+    if (!user) {
+      return flashAndRedirect(
+        'danger',
+        'user not found!',
+        'back',
+        {
+          session,
+          response,
+        }
+      );
+    }
+
+    const passwordReset = await PasswordReset.query()
+      .where('email', user.email)
+      .where('token', request.input('token'))
+      .first();
+
+    if (!passwordReset) {
+      return flashAndRedirect(
+        'danger',
+        'password reset request not found!',
+        '/login',
+        {
+          session,
+          response,
+        }
+      );
+    }
+
+    user.password = request.input('password');
+    await user.save();
+
+    await passwordReset.delete();
+
+    return flashAndRedirect(
+      'success',
+      'password successfully changed!',
+      '/login',
+      {
+        session,
+        response,
+      }
+    );
+  }
+
+  async sendResetEmail({ request, response, session }) {
+    const validation = await validate(request.all(), {
+      email: 'required|email',
+    });
+
+    if (validation.fails()) {
+      session.withErrors(validation.messages()).flashAll();
+      return response.redirect('back');
+    }
+
+    const user = await User.findBy('email', request.input('email'));
+    if (!user) {
+      return flashAndRedirect(
+        'success',
+        'if the email is valid, you should receive an email!',
+        '/login',
+        {
+          session,
+          response,
+        }
+      );
+    }
+
+    await PasswordReset.query().where('email', user.email).delete();
+
+    const token = jwt.sign({ email: user.email }, Env.get('SECRET'), {
+      expiresIn: 60 * 60 * 24 * 3,
+    });
+
+    await PasswordReset.create({
+      email: user.email,
+      token,
+    });
+
+    const params = {
+      ...user.toJSON(),
+      token, 
+      appUrl: Env.get('APP_URL'),
+    };
+
+    await Mail.send('emails.reset_password', params, (message) => {
+      message
+        .to(user.email)
+        .from(Env.get('FROM_EMAIL'))
+        .subject('Reset Your Password!')
+    });
+
+    return flashAndRedirect(
+      'success',
+      'if the email is valid, you should receive an email',
+      '/login',
+      {
+        session,
+        response,
+      }
+    );
+  }
 
   async logout({ auth, response }) {
     await auth.logout();
