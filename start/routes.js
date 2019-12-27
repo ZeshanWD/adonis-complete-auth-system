@@ -16,13 +16,17 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route')
 
-Route.get('/', 'PageController.showHome');
-Route.get('/dashboard', 'PageController.showDashboard');
-Route.get('/signup', 'PageController.showSignup');
-Route.get('/login', 'PageController.showLogin');
-Route.get('/confirm/resend', 'PageController.showResendConfirm');
-Route.get('/password/reset/:token', 'PageController.showPasswordReset');
-Route.get('/forgot/password', 'PageController.showForgotPassword');
+Route.get('/dashboard', 'PageController.showDashboard').middleware(['auth']).as('dashboard');
+
+Route.group(() => {
+  Route.get('/', 'PageController.showHome');
+  Route.get('/signup', 'PageController.showSignup');
+  Route.get('/login', 'PageController.showLogin');
+  Route.get('/confirm/resend', 'PageController.showResendConfirm');
+  Route.get('/password/reset/:token', 'PageController.showPasswordReset');
+  Route.get('/forgot/password', 'PageController.showForgotPassword');
+}).middleware(['authenticated']);
+
 
 Route.group(() => {
   Route.post('signup', 'AuthController.signup');
